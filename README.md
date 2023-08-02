@@ -77,6 +77,17 @@ Then change back to root directory of the repository and run:
 bash run_generation_transfuser.sh
 ```
 
+### Scenario Visualization
+Please make sure the "CARLA_ROOT" ("./carla_server" by default) and "scenario_log_dir" ("generation_results_transfuser" by default) environment variables and arguments are set correctly in the script.
+First spin up a carla server in a separate shell:
+```Shell
+carla_server/CarlaUE4.sh --world-port=2000 -opengl
+```
+Then run the following script for visualization:
+```Shell
+bash run_visualization.sh
+```
+
 ### Fine-tuning
 To fine-tune the original agent on KING scenarios, first download the regular data for AIM-BEV:
 ```
