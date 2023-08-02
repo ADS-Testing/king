@@ -66,7 +66,7 @@ bash run_generation_both_paths.sh
 ```
 Finally, to generate scenarios for [TransFuser](https://github.com/autonomousvision/transfuser), first download the model weights:
 ```Shell
-mkdir driving_agents/king/transfuser/model_checkpoints/regular
+mkdir -p driving_agents/king/transfuser/model_checkpoints/regular
 cd driving_agents/king/transfuser/model_checkpoints/regular
 wget https://s3.eu-central-1.amazonaws.com/avg-projects/transfuser/models.zip
 unzip models.zip
