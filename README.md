@@ -124,9 +124,9 @@ First spin up a carla server in a separate shell:
 ```Shell
 carla_server/CarlaUE4.sh --world-port=2000 -RenderOffScreen
 ```
-Then run the following script for visualization:
+After providing the directory name you want to visualize as an argument, run the following script. The default directory is set to "generation_results".
 ```Shell
-bash run_visualization.sh
+bash run_visualization.sh generation_results_transfuser
 ```
 
 ### Fine-tuning
