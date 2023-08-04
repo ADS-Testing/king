@@ -446,7 +446,7 @@ class CARLARenderer(BaseRenderer):
             traffic_light.set_green_time(100000.0)
 
         # spawn ego
-        ego_bp = self.bp_library.filter("vehicle.lincoln.mkz2017")[0]
+        ego_bp = self.bp_library.filter("vehicle.lincoln.mkz_2017")[0]
         ego_bp.set_attribute('color', '255,0,0')
         ego_actor = self.world.try_spawn_actor(ego_bp, ego_transform)
         tries = 0
