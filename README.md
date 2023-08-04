@@ -21,6 +21,7 @@ cd king
 ### Environment
 Install drivers and reboot. If the appropriate version of the driver is already installed(Check with the command `nvidia-smi`), you can skip this step.
 ```Shell
+sudo apt update
 sudo apt install ubuntu-drivers-common
 sudo ubuntu-drivers autoinstall
 sudo reboot
@@ -63,7 +64,11 @@ For all of the generation scripts, first spin up a carla server in a separate sh
 ```Shell
 carla_server/CarlaUE4.sh --world-port=2000 -RenderOffScreen
 ```
-Following scripts will run generation for all traffic density and automatically evaluate the results.
+If you cannot separate the shell, execute the script in the background.
+```Shell
+nohup carla_server/CarlaUE4.sh --world-port=2000 -RenderOffScreen &
+```
+Following scripts will run generation and automatically evaluate the results.
 
 ##### AIM-BEV generation
 For AIM-BEV generation, run:
@@ -81,6 +86,35 @@ bash run_generation_both_paths.sh
 For Transfuser generation using both gradient paths, run:
 ```Shell
 bash run_generation_transfuser.sh
+```
+
+#### Getting results
+```Shell
+generation_results/
+├── agents_1
+│   ├── RouteScenario_112_to_112
+│   │   ├── results.json
+│   │   └── scenario_records.json
+│   ├── RouteScenario_114_to_114
+│   │   ├── results.json
+│   │   └── scenario_records.json
+│   ...
+│   ├── opt.pkl
+│   └── opt.txt
+├── agents_2
+│   ├── RouteScenario_112_to_112
+│   │   ├── results.json
+│   │   └── scenario_records.json
+│   ...
+│   ├── opt.pkl
+│   └── opt.txt
+└── agents_4
+    ├── RouteScenario_112_to_112
+    │   ├── results.json
+    │   └── scenario_records.json
+    ...
+    ├── opt.pkl
+    └── opt.txt
 ```
 
 ### Scenario Visualization
@@ -121,9 +155,11 @@ To evaluate a fine-tuned model, run the fine-tuning script above and toggle the 
 ## Troubleshooting
 - [Carla terminates immediately](https://github.com/ADS-Testing/Main/wiki/%5BKing%5D-Carla-terminates-immediately)
 - [CondaValueError: prefix already exists:](https://github.com/ADS-Testing/Main/wiki/%5BKing%5D-CondaValueError:-prefix-already-exists:)
+- [ego_bp = self.bp_library.filter("vehicle.lincoln.mkz2017")[0] IndexError: index out of range](https://github.com/ADS-Testing/Main/wiki/%5BKing%5D-ego_bp-=-self.bp_library.filter(%22vehicle.lincoln.mkz2017%22)%5B0%5D-IndexError:-index-out-of-range)
 - [error while loading shared libraries: libomp.so.5](https://github.com/ADS-Testing/Main/wiki/%5BKing%5D-error-while-loading-shared-libraries:-libomp.so.5)
 - [error: command 'gcc' failed with exit status 1](https://github.com/ADS-Testing/Main/wiki/%5BKing%5D-error:-command-'gcc'-failed-with-exit-status-1)
 - [Exception thrown: bind: Address already in use](https://github.com/ADS-Testing/Main/wiki/%5BKing%5D-Exception-thrown:-bind:-Address-already-in-use)
+- [FileNotFoundError: [Errno 2] No such file or directory: 'aplay'](https://github.com/ADS-Testing/Main/wiki/%5BKing%5D-FileNotFoundError:-%5BErrno-2%5D-No-such-file-or-directory:-'aplay')
 - [ImportError: cannot import name 'TrafficLightState' from 'carla' (unknown location)](https://github.com/ADS-Testing/Main/wiki/%5BKing%5D-ImportError:-cannot-import-name-'TrafficLightState'-from-'carla'-(unknown-location))
 - [ModuleNotFoundError: No module named 'agents.navigation.global_route_planner_dao'](https://github.com/ADS-Testing/Main/wiki/%5BKing%5D-ModuleNotFoundError:-No-module-named-'agents.navigation.global_route_planner_dao')
 - [No space left on device](https://github.com/ADS-Testing/Main/wiki/%5BKing%5D-No-space-left-on-device)
