@@ -129,9 +129,24 @@ After providing the directory name you want to visualize as an argument, run the
 bash run_visualization.sh generation_results_transfuser
 ```
 
-### Fine-tuning
+#### Getting results
+```Shell
+generation_results_transfuser/
+└── agents_4
+    ├── RouteScenario_112_to_112
+    │   ├── RouteScenario_112_iter_4.gif
+    │   ├── results.json
+    │   └── scenario_records.json
+    ├── RouteScenario_114_to_114
+    │   ├── RouteScenario_114_iter_1.gif
+    │   ├── results.json
+    │   └── scenario_records.json
+    ...
+    ├── opt.pkl
+    └── opt.txt
+```
 
-#### Running the code
+### Fine-tuning
 To fine-tune the original agent on KING scenarios, first download the regular data for AIM-BEV:
 ```
 chmod +x download_regular_data.sh
@@ -144,8 +159,6 @@ bash run_fine_tuning.sh
 This script also automatically runs evaluation on KING scenarios.
 
 ### Town10 Intersections 
-
-#### Running the code
 To evaluate the original checkpoint for AIM-BEV on the Town10 intersections benchmark, spin up a carla server and run
 ```Shell
 leaderboard/scripts/run_evaluation.sh
