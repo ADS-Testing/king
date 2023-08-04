@@ -1,87 +1,94 @@
 # KING: Generating Safety-Critical Driving Scenarios for Robust Imitation via Kinematics Gradients
 
-## [Project Page](https://lasnik.github.io/king/) | [Paper](https://arxiv.org/pdf/2204.13683.pdf) | [Supplementary](https://lasnik.github.io/king/data/docs/KING_supplementary.pdf)
+## Requirements
 
-<div style="text-align: center">
-  <img style="border:5px solid #263b50;" src="./assets/animated_teaser_h264.gif"/>
-</div>
-<!-- <img src="./assets/animated_teaser_h264.gif"> -->
+### Hardware
+- GPU: NVIDIA Tesla T4
+- Memory: 16GB+
+- Storage: 150GB+
 
-This repository contains the code for the ECCV 2022 paper [KING: Generating Safety-Critical Driving Scenarios for Robust Imitation via Kinematics Gradients](https://arxiv.org/pdf/2204.13683.pdf). If you find this repository useful, please cite
-```bibtex
-@inproceedings{Hanselmann2022ECCV,
-  author = {Hanselmann, Niklas and Renz, Katrin and Chitta, Kashyap and Bhattacharyya, Apratim and Geiger, Andreas},
-  title = {KING: Generating Safety-Critical Driving Scenarios for Robust Imitation via Kinematics Gradients},
-  booktitle = {European Conference on Computer Vision(ECCV)},
-  year = {2022}
-}
-```
-
-## Contents
-1. [Setup](#setup)
-3. [Scenario Generation](#king-scenario-generation)
-4. [Fine-tuning](#fine-tuning)
-5. [Town10 Intersections](#town10-intersections)
-7. [Acknowledgements](#acknowledgements)
+### Software
+- Ubuntu 20.04
+- nvidia driver
 
 ## Setup
-Install anaconda
+Clone the repo
+```Shell
+git clone https://github.com/ADS-Testing/king.git
+cd king
+```
+
+### Environment
+Install drivers and reboot. If the appropriate version of the driver is already installed(Check with the command `nvidia-smi`), you can skip this step.
+```Shell
+sudo apt install ubuntu-drivers-common
+sudo ubuntu-drivers autoinstall
+sudo reboot
+```
+
+Install anaconda and build the environment.
 ```Shell
 wget https://repo.anaconda.com/archive/Anaconda3-2022.05-Linux-x86_64.sh
 bash Anaconda3-2022.05-Linux-x86_64.sh
 source ~/.profile
-```
-
-Clone the repo and build the environment
-
-```Shell
-git clone https://github.com/autonomousvision/king
-cd king
 conda env create -f environment.yml
 conda activate king
 ```
 
-Download and setup CARLA 0.9.10.1
+### Carla
+Download and setup CARLA 0.9.14.
 ```Shell
 chmod +x setup_carla.sh
 ./setup_carla.sh
 ```
 
-## Running the code
-We provide bash scripts for the experiments for convenience. Please make sure the "CARLA_ROOT" ("./carla_server" by default) and "KING_ROOT" (if present) environment variables are set correctly in all of those scripts.
-
-### KING Scenario Generation
-For all of the generation scripts, first spin up a carla server in a separate shell:
-```Shell
-carla_server/CarlaUE4.sh --world-port=2000 -opengl
-```
-Then run the following script for AIM-BEV generation:
-```Shell
-bash run_generation.sh
-```
-This script runs generation for all traffic density and automatically evaluates the results.
-For AIM-BEV generation using both gradient paths, run:
-```Shell
-bash run_generation_both_paths.sh
-```
-Finally, to generate scenarios for [TransFuser](https://github.com/autonomousvision/transfuser), first download the model weights:
+### Transfuser
+To generate scenarios for [TransFuser](https://github.com/autonomousvision/transfuser), you need to download the model weights:
 ```Shell
 mkdir -p driving_agents/king/transfuser/model_checkpoints/regular
 cd driving_agents/king/transfuser/model_checkpoints/regular
 wget https://s3.eu-central-1.amazonaws.com/avg-projects/transfuser/models.zip
 unzip models.zip
 rm -rf models.zip late_fusion geometric_fusion cilrs aim
+cd -
 ```
-Then change back to root directory of the repository and run:
+
+## How to run
+
+### Scenario Generation
+We provide bash scripts for the experiments for convenience. Please make sure the "CARLA_ROOT" ("./carla_server" by default) and "KING_ROOT" (if present) environment variables are set correctly in all of those scripts.
+
+#### Running the code
+For all of the generation scripts, first spin up a carla server in a separate shell:
+```Shell
+carla_server/CarlaUE4.sh --world-port=2000 -RenderOffScreen
+```
+Following scripts will run generation for all traffic density and automatically evaluate the results.
+
+##### AIM-BEV generation
+For AIM-BEV generation, run:
+```Shell
+bash run_generation.sh
+```
+
+##### AIM-BEV generation using both gradient paths
+For AIM-BEV generation using both gradient paths, run:
+```Shell
+bash run_generation_both_paths.sh
+```
+
+##### TransFuser generation
+For Transfuser generation using both gradient paths, run:
 ```Shell
 bash run_generation_transfuser.sh
 ```
 
 ### Scenario Visualization
-Please make sure the "CARLA_ROOT" ("./carla_server" by default) and "scenario_log_dir" ("generation_results_transfuser" by default) environment variables and arguments are set correctly in the script.
+
+#### Running the code
 First spin up a carla server in a separate shell:
 ```Shell
-carla_server/CarlaUE4.sh --world-port=2000 -opengl
+carla_server/CarlaUE4.sh --world-port=2000 -RenderOffScreen
 ```
 Then run the following script for visualization:
 ```Shell
@@ -89,6 +96,8 @@ bash run_visualization.sh
 ```
 
 ### Fine-tuning
+
+#### Running the code
 To fine-tune the original agent on KING scenarios, first download the regular data for AIM-BEV:
 ```
 chmod +x download_regular_data.sh
@@ -101,20 +110,73 @@ bash run_fine_tuning.sh
 This script also automatically runs evaluation on KING scenarios.
 
 ### Town10 Intersections 
+
+#### Running the code
 To evaluate the original checkpoint for AIM-BEV on the Town10 intersections benchmark, spin up a carla server and run
 ```Shell
 leaderboard/scripts/run_evaluation.sh
 ```
 To evaluate a fine-tuned model, run the fine-tuning script above and toggle the commented "TEAM_CONFIG" variable in the evaluation script to change the model weights.
 
+## Troubleshooting
+- [Carla terminates immediately](https://github.com/ADS-Testing/Main/wiki/%5BKing%5D-Carla-terminates-immediately)
+- [CondaValueError: prefix already exists:](https://github.com/ADS-Testing/Main/wiki/%5BKing%5D-CondaValueError:-prefix-already-exists:)
+- [error while loading shared libraries: libomp.so.5](https://github.com/ADS-Testing/Main/wiki/%5BKing%5D-error-while-loading-shared-libraries:-libomp.so.5)
+- [error: command 'gcc' failed with exit status 1](https://github.com/ADS-Testing/Main/wiki/%5BKing%5D-error:-command-'gcc'-failed-with-exit-status-1)
+- [Exception thrown: bind: Address already in use](https://github.com/ADS-Testing/Main/wiki/%5BKing%5D-Exception-thrown:-bind:-Address-already-in-use)
+- [ImportError: cannot import name 'TrafficLightState' from 'carla' (unknown location)](https://github.com/ADS-Testing/Main/wiki/%5BKing%5D-ImportError:-cannot-import-name-'TrafficLightState'-from-'carla'-(unknown-location))
+- [ModuleNotFoundError: No module named 'agents.navigation.global_route_planner_dao'](https://github.com/ADS-Testing/Main/wiki/%5BKing%5D-ModuleNotFoundError:-No-module-named-'agents.navigation.global_route_planner_dao')
+- [No space left on device](https://github.com/ADS-Testing/Main/wiki/%5BKing%5D-No-space-left-on-device)
+- [Unable to install gcc](https://github.com/ADS-Testing/Main/wiki/%5BKing%5D-Unable-to-install-gcc)
+
 ## Acknowledgements
-This implementation is based on code from several repositories. We sincerely thank the authors for their awesome work.
+Related pages:
+- [Project Page](https://lasnik.github.io/king/) 
+- [Paper](https://arxiv.org/pdf/2204.13683.pdf) 
+- [Supplementary](https://lasnik.github.io/king/data/docs/KING_supplementary.pdf)
+
+This implementation is based on code from several repositories.
 - [CARLA Leaderboard](https://github.com/carla-simulator/leaderboard)
 - [Scenario Runner](https://github.com/carla-simulator/scenario_runner)
 - [Learning by Cheating](https://github.com/dotchen/LearningByCheating)
 - [World on Rails](https://github.com/dotchen/WorldOnRails)
 
-Also, check out the code for other recent work on CARLA from our group:
-- [Renz et al., PlanT: Explainable Planning Transformers via Object-Level Representations (CoRL 2022)](https://github.com/autonomousvision/plant)
-- [Chitta et al., TransFuser: Imitation with Transformer-Based Sensor Fusion for Autonomous Driving (PAMI 2022)](https://github.com/autonomousvision/transfuser)
-- [Chitta et al., NEAT: Neural Attention Fields for End-to-End Autonomous Driving (ICCV 2021)](https://github.com/autonomousvision/neat)
+## Authors
+
+### Originally written by
+```bibtex
+@inproceedings{Hanselmann2022ECCV,
+  author = {Hanselmann, Niklas and Renz, Katrin and Chitta, Kashyap and Bhattacharyya, Apratim and Geiger, Andreas},
+  title = {KING: Generating Safety-Critical Driving Scenarios for Robust Imitation via Kinematics Gradients},
+  booktitle = {European Conference on Computer Vision(ECCV)},
+  year = {2022}
+}
+```
+
+### Replicated and modified by
+- [Taehyeon An](https://dev.paxtaeo.com/en)
+- [Kyungwook Nam](https://github.com/nkwook)
+- **Advised by [Donghwan Shin](https://dshin.info)**
+
+## License
+MIT License
+
+Copyright (c) 2021 autonomousvision
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
