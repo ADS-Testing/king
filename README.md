@@ -1,4 +1,4 @@
-# KING: Generating Safety-Critical Driving Scenarios for Robust Imitation via Kinematics Gradients
+# Replication of "KING: Generating Safety-Critical Driving Scenarios for Robust Imitation via Kinematics Gradients"
 
 This is a modified version of the [original project](https://lasnik.github.io/king/) to support the following:
 - Compatible with CARLA 0.9.14
